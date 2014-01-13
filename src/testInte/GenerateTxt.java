@@ -42,7 +42,7 @@ public class GenerateTxt {
 	
 	public static void generateUserContribsTxt(String user, String totalNodeNumber, int depth, String uclimit, String rvlimit, String src) throws Exception {
 		
-		 List<String> userTxt = ReadUserXML.startWithUser(user, uclimit, totalNodeNumber, depth, rvlimit);
+		 List<String> userTxt = ReadUserXML.startWithUser(user, uclimit, depth, rvlimit);
 		
 		 File f = new File(src);
 		 

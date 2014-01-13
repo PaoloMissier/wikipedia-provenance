@@ -8,7 +8,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 
-public class ReadUserXML {
+public class ReadUserContribXML {
 
 	/**
 	 * @param args
@@ -57,6 +57,12 @@ public class ReadUserXML {
 		return userTxt;
 	}
 
+
+	
+	//@matthew_gamble wrote:
+	//Don't like how all of this is done by "side-effect" would prefer to pass a storage object to the method with a defined interface that it
+	//would then call .getUserData() on. 
+	
 	public static List<String> readXML(Document doc, int depth, String uclimit, String rvlimit) throws Exception {
 
 		List<String> userTxt = new ArrayList<String>();
@@ -64,7 +70,7 @@ public class ReadUserXML {
 		//System.out.println(root);
 
 		List queryNo = root.getChildren("query");
-
+		//WHAT IS THIS DEPTH ALL ABOUT?!		
 		depth--;
 		
 		for (int i = 0; i < queryNo.size(); i++) {
@@ -115,21 +121,21 @@ public class ReadUserXML {
 							if(ReadXML.usingNeo4j())
 							    CreateGraph.getUserData(title, revid, user, time, comment, size, pageid);
 							
-							if(ReadXML.isGeneratingPROV())
+							if(ReadXML.isGeneratingPROV()){
 						    	CreateProv.getUserData(title, revid, user, time, comment, size, pageid);
 							
+							}	
+						    	
 							userTxt.add("userid:" + userid + "  user:"
 									+ user + "  pageid:" + pageid
 									+ "  revid:" + revid + " title:"
 									+  title + " time:" + time + " comment:" + comment + " size:" + size + "\n");
 							
-//							System.out.println("userid:" + userid + "  user:"
-//									+ user + "  pageid:" + pageid
-//									+ "  revid:" + revid + " title:"
-//									+  title + " time:" + time + " comment:" + comment + " size:" + size);
 							ReadPageXML.startWithPage(title, rvlimit, depth, uclimit);
+							
+							
+							
 						}
-						
 						
 					}
 			

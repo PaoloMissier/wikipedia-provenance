@@ -8,13 +8,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jettison.json.JSONException;
+import org.openrdf.rio.RDFFormat;
 
 import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.UniformInterfaceException;
 
-public class ReadXML {
 
-	static String totalNodeNumber = CountNodeNumber.countAllNodeNumber();
+
+public class ReadXML {
+//Refactoring out totalNodeNumber - never used and just passed around as an argument - can be acquired in CreateGraph if really needed.
+//	static String totalNodeNumber = CountNodeNumber.countAllNodeNumber();
 //	public static void main(String[] args) throws Exception {
 ////		String totalNodeNumber = CountNodeNumber.countAllNodeNumber();
 ////		System.out.println(totalNodeNumber);		
@@ -45,19 +48,59 @@ public class ReadXML {
 //
 //	}
 	
+	//Toggle whether to expect a Neo4j instance or not
+	//Bit of a get-around but wanted to avoid more significant refactor
+	//Assumption is true 
+	private static Boolean useNeo4j = true;
+	//Toggle whether to generate PROV output with createProv
+	// Assumption is false - combined with the above the default state retains original behaviour
+	private static Boolean generatePROV = false;
+	
+	public static Boolean usingNeo4j() {
+		return useNeo4j;
+	}
+
+	public static void useNeo4j(Boolean useNeo4j) {
+		ReadXML.useNeo4j = useNeo4j;
+	}
+
+	public static Boolean isGeneratingPROV() {
+		return generatePROV;
+	}
+
+	public static void generatePROV(Boolean generatePROV) {
+		ReadXML.generatePROV = generatePROV;
+	}
+	
 	public static void queryByArticle(String title, String rvlimit, int depth, String uclimit) throws Exception{
-		Neo4jIndex.createIndex();
-		ReadPageXML.startWithPage(title, rvlimit, totalNodeNumber, depth, uclimit);
+		if(useNeo4j)
+		   Neo4jIndex.createIndex();
+		
+		ReadPageXML.startWithPage(title, rvlimit, depth, uclimit);
+	}
+	
+	public static String queryRDFByArticle(String title, String rvlimit, int depth, String uclimit, RDFFormat format) throws Exception{
+		if(useNeo4j)
+		   Neo4jIndex.createIndex();
+		
+		ReadXML.generatePROV(true);
+		ReadPageXML.setRDFFormat(format);
+		ReadPageXML.startWithPage(title, rvlimit, depth, uclimit);
+		return ReadPageXML.getRDFString();
 	}
 	
 	public static void queryByUser(String user, String uclimit, int depth, String rvlimit) throws Exception{
-		Neo4jIndex.createIndex();
-		ReadUserXML.startWithUser(user, uclimit, totalNodeNumber,depth, rvlimit);
+		if(useNeo4j)
+			Neo4jIndex.createIndex();
+		
+		ReadUserXML.startWithUser(user, uclimit,depth, rvlimit);
 		//startWithUser(user, uclimit, totalNodeNumber, depth, rvlimit);
 	}
 	
 	public static void GetContributionsByUser(String user, String folderPath) throws Exception{
+		if(useNeo4j)
 		Neo4jIndex.createIndex();
+		
 		GenerateTxt.getUserContribsTxt(user, folderPath);
 	}
 	
@@ -180,6 +223,8 @@ public class ReadXML {
 		Delete.deleteRelationship();
 		Delete.deleteNode();
 	}
+
+
 	
 	
 

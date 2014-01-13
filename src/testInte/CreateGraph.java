@@ -23,10 +23,11 @@ public class CreateGraph {
 	
 	public static final String SERVER_ROOT_URI="http://localhost:7474/db/data/";
 		
-	public static void getData(String title, String revid, String parentid, String user, String time, String comment, String size, String pageid, String totalNodeNumber) throws URISyntaxException, ClientHandlerException, UniformInterfaceException, JSONException{
+	public static void getData(String title, String revid, String parentid, String user, String time, String comment, String size, String pageid) throws URISyntaxException, ClientHandlerException, UniformInterfaceException, JSONException{
 		
 		checkDatabaseIsRunning();
 		
+		//Check if article node exists - else create it and add to Neo
 		String specialArticleNodeUri = Neo4jIndex.queryNodeOrRelationship("node", "articleNodeIndex", "revid", revid);
 		URI articleNode = new URI("");
 		if(specialArticleNodeUri == null){
@@ -35,6 +36,7 @@ public class CreateGraph {
 		}else{
 			articleNode = new URI(specialArticleNodeUri);
 		}	
+		//Add the appropriate properties for the article
 		addProperty(articleNode, "id", revid);
 		addProperty(articleNode, "revid", revid);
 		addProperty(articleNode, "title", title);
@@ -166,7 +168,7 @@ public class CreateGraph {
 		}
 	}
 	
-public static void getUserData(String title, String revid, String user, String time, String comment, String size, String pageid, String totalNodeNumber) throws URISyntaxException, ClientHandlerException, UniformInterfaceException, JSONException{
+public static void getUserData(String title, String revid, String user, String time, String comment, String size, String pageid) throws URISyntaxException, ClientHandlerException, UniformInterfaceException, JSONException{
 		
 		checkDatabaseIsRunning();
 		
@@ -277,6 +279,7 @@ public static void getUserData(String title, String revid, String user, String t
 		ClientResponse response = resource.accept(MediaType.APPLICATION_JSON).type(MediaType.APPLICATION_JSON).entity("{}").post(ClientResponse.class);
 		
 		final URI location = response.getLocation();
+		System.out.println("Response = " + response.getStatus());
 		System.out.println(String.format("POST to [%s], status code [%d], location header [%s]", nodeEntryPointUri, response.getStatus(),location.toString()));		
 		response.close();		
 		return location;
