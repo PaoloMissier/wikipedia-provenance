@@ -37,13 +37,15 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Document;
 
-import testInte.ReadXML;
-
 import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.UniformInterfaceException;
+
+import core.ReadXML;
+
 import javax.swing.BoxLayout;
 
 import org.codehaus.jettison.json.JSONException;
+
 import javax.swing.JTable;
 
 public class NewGUI {
