@@ -7,7 +7,9 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+
 import java.util.HashMap;
+
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -23,8 +25,10 @@ import com.hp.hpl.jena.query.ResultSetFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.resultset.ResultSetFormat;
 
+
 import core.CreateProv;
 import core.ReadXML;
+
 
 public class Wiki2prov {
 
@@ -44,6 +48,7 @@ public class Wiki2prov {
 	private static String rvstart = "";
 	
 	private static HashMap<String,String> uriStartid = new HashMap<String,String>();
+
 	
 	//Lazy to throw Exception - I should really deal with them
 	public static void main (String args []) throws Exception{
@@ -54,11 +59,13 @@ public class Wiki2prov {
 		options.addOption("f", true, "file listing URLs (http://en.wikipedia.org/wiki/{title}) or titles of wikipages to proccess (one per line or csv)");
 		options.addOption("t", true,
 				"file type of the input file, text, csv (title,startid,startdate), jena (result set where URL is a result var 'page'");
+
 		options.addOption("p", true, "URL or title of a wiki-page for proccessing");
 		options.addOption("o", true, "directory to output to (default is cwd)");
 		options.addOption("r",true,"number of revisions");
 		options.addOption("u",true,"number of user contributions");
 		options.addOption("d",true,"depth");
+
 		options.addOption("startid",true,"rvstartid: the numerical wikipedia revision id to start at");
 		options.addOption("startdate",true,"rvstart: the timestamp to start at");
 		
@@ -67,11 +74,7 @@ public class Wiki2prov {
 		//be using the english version of wikipedia!
 		//	options.addOption("lang",true,"Alternative language verson of wikipedia: de,es etc");
 
-	    //Not sure how redirects are dealt with atm	
- 	    //	options.addOption("r", false,
-	    //			"Attempt to deal with Wikipedia redirects");
-
-		CommandLineParser parser = new PosixParser();
+	 	CommandLineParser parser = new PosixParser();
 		CommandLine cmd = parser.parse(options, args);
 		//The list of pages or URIs we will parse
 		ArrayList<String> uris = new ArrayList<String>();
@@ -95,7 +98,12 @@ public class Wiki2prov {
 		}
 		if (cmd.hasOption("startdate")) {
 			rvstart = cmd.getOptionValue("startdate");
+
 		}
+		if (cmd.hasOption('r')) {
+			redirects = true;
+		}
+		
 		if (cmd.hasOption('u')) {
 			uclimit = cmd.getOptionValue('u');
 		}
@@ -123,19 +131,22 @@ public class Wiki2prov {
 			page = cmd.getOptionValue('p');
 			uris.add(page);
 		}
-		
-	
+
+		ReadXML.generatePROV(true);
+		ReadXML.useNeo4j(false);
+
 		//TODO allow for different prov model types (Prov-JSON, Prov-N)
 		//Requires missing support in CreateProv
 		//CreateProv.setModelType(ModelType.PROV_N)
 		
 		for (String uri : uris) {
+
 			String title;
 			
 			if(uriStartid.containsKey(uri))
 				rvstartid = uriStartid.get(uri);
 			
-			    //Is the uri a page title or page url?
+
 				if(uri.startsWith("http")){
 				title = uri
 						.substring(wikiUrl.length(), uri.length());
@@ -143,6 +154,7 @@ public class Wiki2prov {
 				else{
 					title = uri;
 				}
+
 				
 				//TODO add argument to allow choice of RDF formats - currently defaults to ttl 
 				
