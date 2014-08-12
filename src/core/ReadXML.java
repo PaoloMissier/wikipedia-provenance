@@ -100,7 +100,7 @@ public class ReadXML {
 		//This should be an argument 
 		ReadPageXML.setRDFFormat(format);
 		
-		ReadPageXML.startWithPage(title, rvlimit, rvstartid, rvstart, depth, uclimit,true,false,true);
+		ReadPageXML.startWithPage(title, rvlimit, rvstartid, rvstart, depth, uclimit,true,false,generateDiff);
 		//This should be returned from the previous method - not a side effect!
 		return ReadPageXML.getRDFString();
 	}

@@ -46,6 +46,7 @@ public class Wiki2prov {
 	private static int depth = 1;
 	private static String rvstartid = "";
 	private static String rvstart = "";
+	private static boolean diff = false;
 	
 	private static HashMap<String,String> uriStartid = new HashMap<String,String>();
 
@@ -68,8 +69,9 @@ public class Wiki2prov {
 
 		options.addOption("startid",true,"rvstartid: the numerical wikipedia revision id to start at");
 		options.addOption("startdate",true,"rvstart: the timestamp to start at");
-		
+		options.addOption("diff",false,"diff: Evalaute diff between revisions (requires GNU wdiff)");
 		options.addOption("h",false,"Help: display this usage info");
+		
 		//TODO support other language formats rather than assuming from my arrogant British imperialist point of view that everyone should
 		//be using the english version of wikipedia!
 		//	options.addOption("lang",true,"Alternative language verson of wikipedia: de,es etc");
@@ -98,6 +100,10 @@ public class Wiki2prov {
 		}
 		if (cmd.hasOption("startdate")) {
 			rvstart = cmd.getOptionValue("startdate");
+
+		}
+		if (cmd.hasOption("diff")) {
+			diff = true;
 
 		}
 		if (cmd.hasOption('r')) {
@@ -158,7 +164,7 @@ public class Wiki2prov {
 				
 				//TODO add argument to allow choice of RDF formats - currently defaults to ttl 
 				
-				String out = ReadXML.queryByArticle(title, rvlimit, rvstartid, rvstart, depth, uclimit, RDFFormat.TURTLE,true);
+				String out = ReadXML.queryByArticle(title, rvlimit, rvstartid, rvstart, depth, uclimit, RDFFormat.TURTLE,diff);
 				if(stdout){
 					System.out.println(out);
 				}else {
