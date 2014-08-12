@@ -125,10 +125,15 @@ public class CreateProv {
 			model = new RdfConstructor(new SesameGraphBuilder(rep,factory),factory);
     		RdfConstructor rdfmodel = (RdfConstructor) model;
     		Namespace ns = rdfmodel.getNamespace();
-    		
+    		if(ns == null){
+    			ns = new Namespace();
+    			rdfmodel.setNamespace(ns);
+    		}
     		ns.register("xsd", "http://www.w3.org/2001/XMLSchema#");
     		ns.register("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
     		ns.register("wikiprov", "http://purl.org/net/wikiprov#");
+    		
+    		
 		//TODO setup for Prov-n and Prov-JSON
     	//case  PROV_N: model = new NotationConstructor(null, null);
 		//case  PROV_JSON: model = new JSONConstructor();
@@ -154,7 +159,7 @@ public class CreateProv {
 	        } else if (format.equals(RDFFormat.TURTLE)) {
 	            serialiser=new org.openrdf.rio.turtle.TurtleWriter(writer);
 	        }
-	        rHelper.setPrefixes(serialiser,rdfmodel.getNamespace().getNamespaces());
+	        rHelper.setPrefixes(serialiser,rdfmodel.getNamespace().getPrefixes());
 	        rep.getConnection().export(serialiser);
 	        String out = writer.toString();
 	       // System.out.println(out);
@@ -173,24 +178,6 @@ public class CreateProv {
 		return a;
 	}
 
-	public static Attribute createProvAttribute(AttributeKind kind, Object value, String xsdType){
-
-		Attribute a = null;
-
-		switch(kind){
-		case PROV_TYPE:
-	//		a = new Type(value,new QualifiedName(XSD_NS,xsdType,XSD_PREFIX));
-		case PROV_LABEL:
-		case PROV_ROLE:
-		case PROV_LOCATION:
-		case PROV_VALUE:
-		case PROV_KEY:
-		case OTHER:
-
-		}
-
-		return a;
-	}
 
 
 
@@ -234,7 +221,7 @@ public class CreateProv {
 		String commentId = "comment" + revid;
 		properties = new ArrayList<Attribute>();
 
-		properties.add(createProvAttribute(AttributeKind.PROV_TYPE, "edit","string"));
+		properties.add(factory.newAttribute(AttributeKind.PROV_TYPE, new QualifiedName(WIKI_PROV_NS,"edit",WIKI_PROV_PREFIX),new QualifiedName(XSD_NS,"anyURI",XSD_PREFIX)));
 		properties.add( factory.newAttribute(AttributeKind.PROV_TYPE,ontology.QNAME_PROVO_Activity,new QualifiedName(XSD_NS,"anyURI",XSD_PREFIX)));
 		properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "comment", comment,"string"));
 		properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "starttime", "null","string"));
@@ -304,7 +291,7 @@ public class CreateProv {
 			 properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "id", parentid,"string"));
 			 properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "title", title,"string"));
 			 properties.add( factory.newAttribute(AttributeKind.PROV_TYPE,ontology.QNAME_PROVO_Entity,new QualifiedName(XSD_NS,"anyURI",XSD_PREFIX)));
-			 properties.add(createProvAttribute(AttributeKind.PROV_TYPE, "article","string"));
+			 properties.add(factory.newAttribute(AttributeKind.PROV_TYPE, new QualifiedName(WIKI_PROV_NS,"article",WIKI_PROV_PREFIX),new QualifiedName(XSD_NS,"anyURI",XSD_PREFIX)));
 			 properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "pageid", pageid,"string"));
 
 			 model.newEntity(parentNodeURI, properties);
@@ -366,7 +353,7 @@ public static void getUserData(String title, String revid, String user, String t
 	properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX,"id",revid,"string"));
 	properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "revid", revid, "string"));
 	properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX,"title", title,"string"));
-	properties.add(createProvAttribute(AttributeKind.PROV_TYPE, "article","string"));
+	properties.add(factory.newAttribute(AttributeKind.PROV_TYPE, new QualifiedName(WIKI_PROV_NS,"article",WIKI_PROV_PREFIX),new QualifiedName(XSD_NS,"anyURI",XSD_PREFIX)));
 	properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "type", "entity","string"));
 	properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX,"pageid", pageid,"string"));
 	properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX,"comment", comment,"string"));
@@ -384,7 +371,7 @@ public static void getUserData(String title, String revid, String user, String t
 	String commentId = "comment" + revid;
 	properties = new ArrayList<Attribute>();
 
-	properties.add(createProvAttribute(AttributeKind.PROV_TYPE, "edit","string"));
+	properties.add(factory.newAttribute(AttributeKind.PROV_TYPE, new QualifiedName(WIKI_PROV_NS,"edit",WIKI_PROV_PREFIX),new QualifiedName(XSD_NS,"anyURI",XSD_PREFIX)));
 	properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "type", "activity","string"));
 	properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "comment", comment,"string"));
 	properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "starttime", "null","string"));
@@ -400,7 +387,7 @@ public static void getUserData(String title, String revid, String user, String t
 	QualifiedName userNodeURI = new QualifiedName(WIKI_PROV_NS,userNodeString,WIKI_PROV_PREFIX);
 	properties = new ArrayList<Attribute>();
 
-	properties.add(createProvAttribute(AttributeKind.PROV_TYPE, "editor","string"));
+	properties.add(factory.newAttribute(AttributeKind.PROV_TYPE, new QualifiedName(WIKI_PROV_NS,"editor",WIKI_PROV_PREFIX),new QualifiedName(XSD_NS,"anyURI",XSD_PREFIX)));
 	properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "type", "agent","string"));
 	properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "user_name", user,"string"));
 	properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "id", user,"string"));
