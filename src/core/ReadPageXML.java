@@ -86,9 +86,9 @@ public class ReadPageXML {
 	//@Change - add "content" to the request so that we can generate a diff 
 	//@Change - add arguments for RDF generation and diff generation
 	//TODO toggle content request based on diff boolean 
-	public static void startWithPage(String title, String rvlimit, int depth, String uclimit, boolean generatePROV, boolean useNEO4J, boolean generateDiff) throws Exception{
+	public static void startWithPage(String title, String rvlimit, int depth, String uclimit, boolean generatePROV, boolean useNEO4J, boolean shouldDiff) throws Exception{
 		setGeneratePROV(generatePROV);
-		setGenerateDiff(generateDiff);
+		setGenerateDiff(shouldDiff);
 		setUseNEO4J(useNEO4J);
 		
 		//Seems to be a fairly random and limited percent encoding going on ...? 

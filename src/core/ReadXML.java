@@ -92,7 +92,7 @@ public class ReadXML {
 		
 	}
 	
-	public static String queryByArticle(String title, String rvlimit, String rvstartid,String rvstart, int depth, String uclimit, RDFFormat format, boolean generateDiff) throws Exception{
+	public static String queryByArticle(String title, String rvlimit, String rvstartid,String rvstart, int depth, String uclimit, RDFFormat format, boolean shouldDiff) throws Exception{
 		//Christ this is ugly - really need to refactor ReadXML ReadUserXML and ReadPageXML
 		//These should be assumed
 		useNeo4j(false);
@@ -100,7 +100,7 @@ public class ReadXML {
 		//This should be an argument 
 		ReadPageXML.setRDFFormat(format);
 		
-		ReadPageXML.startWithPage(title, rvlimit, rvstartid, rvstart, depth, uclimit,true,false,generateDiff);
+		ReadPageXML.startWithPage(title, rvlimit, rvstartid, rvstart, depth, uclimit,true,false,shouldDiff);
 		//This should be returned from the previous method - not a side effect!
 		return ReadPageXML.getRDFString();
 	}

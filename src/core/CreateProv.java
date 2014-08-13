@@ -251,7 +251,7 @@ public class CreateProv {
 
 
 
-		String relationshipArticleActivityName = revid + "generation";
+		String relationshipArticleActivityName = "generation" + revid;
 		QualifiedName relationshipArticleActivityNodeURI = new QualifiedName(WIKI_PROV_NS,relationshipArticleActivityName,WIKI_PROV_PREFIX);
 
 		properties = new ArrayList<Attribute>();
