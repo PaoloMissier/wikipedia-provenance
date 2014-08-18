@@ -181,7 +181,7 @@ public class CreateProv {
 
 
 
-	public static void getData(String title, String revid, String parentid, String user, String time, String comment, String size, String pageid, String content, String parentContent, boolean generateDiff) throws URISyntaxException, ClientHandlerException, UniformInterfaceException, JSONException, DatatypeConfigurationException{
+	public static void getData(String title, String revid, String parentid, String user, String time, String comment, String size, String pageid, String content, String parentContent) throws URISyntaxException, ClientHandlerException, UniformInterfaceException, JSONException, DatatypeConfigurationException{
 		revisions_count++;
 		title = title.replaceAll(" ", "_");
 		if(model == null){
@@ -312,7 +312,7 @@ public class CreateProv {
 			 properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "id", relationshipRevisionParentName,"string"));
 			 properties.add( factory.newAttribute(AttributeKind.PROV_TYPE,ontology.QNAME_PROVO_Revision,new QualifiedName(XSD_NS,"anyURI",XSD_PREFIX)));
 
-			 if(generateDiff & (parentContent != null)){
+			 if(ReadXML.isGeneratingDiff() & (parentContent != null)){
 
 				Diff d = Diff.generateDiff(parentContent, content);
 				properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "words", d.getWords() ,"integer"));

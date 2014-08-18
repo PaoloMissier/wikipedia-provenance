@@ -7,9 +7,7 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-
 import java.util.HashMap;
-
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -25,9 +23,9 @@ import com.hp.hpl.jena.query.ResultSetFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.resultset.ResultSetFormat;
 
-
 import core.CreateProv;
 import core.ReadXML;
+import core.neo4j.Neo4jIndex;
 
 
 public class Wiki2prov {
@@ -49,6 +47,8 @@ public class Wiki2prov {
 	private static boolean diff = false;
 	
 	private static HashMap<String,String> uriStartid = new HashMap<String,String>();
+	private static boolean neo4j;
+	private static String server;
 
 	
 	//Lazy to throw Exception - I should really deal with them
@@ -70,7 +70,10 @@ public class Wiki2prov {
 		options.addOption("startid",true,"rvstartid: the numerical wikipedia revision id to start at");
 		options.addOption("startdate",true,"rvstart: the timestamp to start at");
 		options.addOption("diff",false,"diff: Evalaute diff between revisions (requires GNU wdiff)");
+		options.addOption("neo4j",false,"neo4j: Use a neo4j store");
+		options.addOption("server",true,"neo4j server: Use neo4j at address (default assumes localhost:7474)");
 		options.addOption("h",false,"Help: display this usage info");
+		
 		
 		//TODO support other language formats rather than assuming from my arrogant British imperialist point of view that everyone should
 		//be using the english version of wikipedia!
@@ -106,6 +109,14 @@ public class Wiki2prov {
 			diff = true;
 
 		}
+		if (cmd.hasOption("neo4j")) {
+			neo4j = true;
+		}
+		if (cmd.hasOption("server")) {
+			server = cmd.getOptionValue("server");
+			Neo4jIndex.setServerRootURI(server);
+
+		}
 		if (cmd.hasOption('r')) {
 			redirects = true;
 		}
@@ -139,11 +150,11 @@ public class Wiki2prov {
 		}
 
 		ReadXML.generatePROV(true);
-		ReadXML.useNeo4j(false);
+		ReadXML.useNeo4j(neo4j);
+		ReadXML.generatePROV(!neo4j);
+		ReadXML.generateDiff(diff);
 
 		//TODO allow for different prov model types (Prov-JSON, Prov-N)
-		//Requires missing support in CreateProv
-		//CreateProv.setModelType(ModelType.PROV_N)
 		
 		for (String uri : uris) {
 
@@ -163,8 +174,7 @@ public class Wiki2prov {
 
 				
 				//TODO add argument to allow choice of RDF formats - currently defaults to ttl 
-				
-				String out = ReadXML.queryByArticle(title, rvlimit, rvstartid, rvstart, depth, uclimit, RDFFormat.TURTLE,diff);
+				String out = ReadXML.queryByArticle(title, rvlimit, rvstartid, rvstart, depth, uclimit, RDFFormat.TURTLE);
 				if(stdout){
 					System.out.println(out);
 				}else {

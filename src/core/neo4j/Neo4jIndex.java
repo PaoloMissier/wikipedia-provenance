@@ -12,7 +12,12 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 
 public class Neo4jIndex {
-	private static final String SERVER_ROOT_URI = "http://localhost:7474/db/data/";
+	
+	private static String SERVER_ROOT_URI = "http://localhost:7474/db/data/";
+	
+	public static void setServerRootURI(String uri){
+		SERVER_ROOT_URI = uri;
+	}
 	
 	public static void createIndex(){
 		createNodeOrRelationshipIndex("node", "articleNodeIndex");		

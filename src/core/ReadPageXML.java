@@ -18,19 +18,6 @@ import util.ISO8601;
 
 public class ReadPageXML {
 	
-//	public static void main(String[] args) throws Exception {
-//		String totalNodeNumber = CountNodeNumber.countAllNodeNumber();
-//
-//		//readXMLbyFileName("d:\\Albert.xml", totalNodeNumber);
-//		//readXMLbyFileName("d:\\test2.xml", nodeNumber);
-//		
-//		//readXMLbyURL("http://en.wikipedia.org/w/api.php?action=query&titles=Angry%20Birds&prop=revisions&rvlimit=50&format=xml", totalNodeNumber);
-//		String title = "User:F=q(E+v^B)/sandbox";		
-//		String revision = "10";
-//		int depth = 2;
-//		String uclimit = "5";
-//		startWithPage(title, revision, totalNodeNumber, depth, uclimit);
-//	}
 	
 	//Holds an String version of the latest prov extraction - a bit ugly to store and access in this way 
 	private static String rdfString;
@@ -45,25 +32,6 @@ public class ReadPageXML {
 	protected static void setGeneratePROV(boolean generatePROV) {
 		ReadPageXML.generatePROV = generatePROV;
 	}
-
-	protected static boolean isGeneratingDiff() {
-		return generateDiff;
-	}
-
-	protected static void setGenerateDiff(boolean generateDiff) {
-		ReadPageXML.generateDiff = generateDiff;
-	}
-
-	protected static boolean usingNEO4J() {
-		return useNEO4J;
-	}
-
-	protected static void setUseNEO4J(boolean useNEO4J) {
-		ReadPageXML.useNEO4J = useNEO4J;
-	}
-
-	private static boolean generateDiff = false;
-	private static boolean useNEO4J = true;
 
 	//String may be null
 	public static String getRDFString(){
@@ -86,10 +54,8 @@ public class ReadPageXML {
 	//@Change - add "content" to the request so that we can generate a diff 
 	//@Change - add arguments for RDF generation and diff generation
 	//TODO toggle content request based on diff boolean 
-	public static void startWithPage(String title, String rvlimit, int depth, String uclimit, boolean generatePROV, boolean useNEO4J, boolean shouldDiff) throws Exception{
-		setGeneratePROV(generatePROV);
-		setGenerateDiff(shouldDiff);
-		setUseNEO4J(useNEO4J);
+	public static void startWithPage(String title, String rvlimit, int depth, String uclimit) throws Exception{
+		
 		
 		//Seems to be a fairly random and limited percent encoding going on ...? 
 				title = title.replaceAll(" ", "%20");
@@ -102,10 +68,8 @@ public class ReadPageXML {
 		
 	}
 	
-	public static void startWithPage(String title, String rvlimit,String rvstartid, String rvstart, int depth, String uclimit, boolean generatePROV, boolean useNEO4J, boolean generateDiff) throws Exception{
-		setGeneratePROV(generatePROV);
-		setGenerateDiff(generateDiff);
-		setUseNEO4J(useNEO4J);
+	public static void startWithPage(String title, String rvlimit,String rvstartid, String rvstart, int depth, String uclimit) throws Exception{
+		
 		String rvlimiturl = "";
 		String rvstartidurl = "";
 		String rvstarturl = "";
@@ -125,29 +89,23 @@ public class ReadPageXML {
 				title = title.replaceAll("[+]", "%2B");
 				System.err.println("Proccessing:" +  title);
 				
-				if(generatePROV){
+				if(ReadXML.isGeneratingPROV()){
 					CreateProv.setModelType(ModelType.PROV_RDF); //quick hack to reset the model
 					CreateProv.createProvBundle(title);
 				}
 				
 				if (depth > 0)
-				readXMLbyURL("http://en.wikipedia.org/w/api.php?action=query&titles=" + title + "&prop=revisions" + rvlimiturl +  rvstarturl +  rvstartidurl + "&rvprop=ids|flags|user|timestamp|comment|content|size&format=xml",  depth,title, uclimit, rvlimit, rvstartid, rvstart);
+					readXMLbyURL("http://en.wikipedia.org/w/api.php?action=query&titles=" + title + "&prop=revisions" + rvlimiturl +  rvstarturl +  rvstartidurl + "&rvprop=ids|flags|user|timestamp|comment|content|size&format=xml",  depth,title, uclimit, rvlimit, rvstartid, rvstart);
 				
-				if(generatePROV){
+				if(ReadXML.isGeneratingPROV()){
 					CreateProv.createProvBundleStatistics();
 					CreateProv.resetStats();
-				}
-				if(ReadXML.isGeneratingPROV())
 					rdfString = CreateProv.getRDFModel(rdfFormat);
+				}
+					
 		
 	}
 
-	//@Change maintain legacy behaviour for this argument set for NEO4J, no RDF and no diff generation 
-	public static void startWithPage(String title, String rvlimit, int depth, String uclimit) throws Exception{
-			
-		startWithPage(title, rvlimit, depth, uclimit, false, true, false);
-		
-	}
 
 	public static void readXMLbyFileName(String fileName, String totalNodeNumber, int depth, String uclimit, String rvlimit) throws Exception {
 		SAXBuilder builder = new SAXBuilder();
@@ -263,11 +221,11 @@ public class ReadPageXML {
 							}
 							
 							
-							if(usingNEO4J())
+							if(ReadXML.usingNeo4j())
 								CreateGraph.getData(title, revid, parentid, user, time, comment, size, pageid);
 							
-							if(isGeneratingPROV())
-							    CreateProv.getData(title, revid, parentid, user, time, comment, size, pageid,content,parentContent,isGeneratingDiff());
+							if(ReadXML.isGeneratingPROV())
+							    CreateProv.getData(title, revid, parentid, user, time, comment, size, pageid,content,parentContent);
 //							System.out.println("revid:" + revid + "  parentid:"
 //									+ parentid + "  user:" + user
 //									+ "  time:" + time + " comment:"

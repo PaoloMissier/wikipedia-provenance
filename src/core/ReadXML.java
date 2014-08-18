@@ -62,6 +62,16 @@ public class ReadXML {
 	// Assumption is false - combined with the above the default state retains original behaviour
 	private static Boolean generatePROV = false;
 	
+	private static Boolean generateDiff = false;
+	
+	public static Boolean isGeneratingDiff() {
+		return generateDiff;
+	}
+
+	public static void generateDiff(Boolean generateDiff) {
+		ReadXML.generateDiff = generateDiff;
+	}
+
 	public static Boolean usingNeo4j() {
 		return useNeo4j;
 	}
@@ -88,20 +98,18 @@ public class ReadXML {
 	//Queries by article - doesn't generate a diff 
 	public static String queryByArticle(String title, String rvlimit, int depth, String uclimit, RDFFormat format) throws Exception{
 		
-		return queryByArticle(title,  rvlimit, "", "",  depth,  uclimit,  format, false);
+		return queryByArticle(title,  rvlimit, "", "",  depth,  uclimit,  format);
 		
 	}
 	
-	public static String queryByArticle(String title, String rvlimit, String rvstartid,String rvstart, int depth, String uclimit, RDFFormat format, boolean shouldDiff) throws Exception{
+	public static String queryByArticle(String title, String rvlimit, String rvstartid,String rvstart, int depth, String uclimit, RDFFormat format) throws Exception{
 		//Christ this is ugly - really need to refactor ReadXML ReadUserXML and ReadPageXML
-		//These should be assumed
-		useNeo4j(false);
-		generatePROV(true);
+		
 		//This should be an argument 
 		ReadPageXML.setRDFFormat(format);
 		
-		ReadPageXML.startWithPage(title, rvlimit, rvstartid, rvstart, depth, uclimit,true,false,shouldDiff);
-		//This should be returned from the previous method - not a side effect!
+		ReadPageXML.startWithPage(title, rvlimit, rvstartid, rvstart, depth, uclimit);
+		
 		return ReadPageXML.getRDFString();
 	}
 	
@@ -110,7 +118,7 @@ public class ReadXML {
 			Neo4jIndex.createIndex();
 		
 		ReadUserContribXML.startWithUser(user, uclimit,depth, rvlimit);
-		//startWithUser(user, uclimit, totalNodeNumber, depth, rvlimit);
+		
 	}
 	
 	public static void GetContributionsByUser(String user, String folderPath) throws Exception{

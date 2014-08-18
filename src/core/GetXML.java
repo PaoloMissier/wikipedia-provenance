@@ -8,16 +8,9 @@ import java.io.PrintWriter;
 
 public class GetXML {
 	public static void main(String[] args) throws Exception {
-//		saveXML("d:\\test.xml",
-//				"http://en.wikipedia.org/w/api.php?action=query&titles=Albert%20Einstein&prop=revisions&rvlimit=5&format=xml");
-//		saveXML("d:\\test2.xml",
-//				"http://en.wikipedia.org/w/api.php?action=query&titles=Albert%20Einstein&prop=revisions&rvlimit=10&format=xml");
-//		saveXML("d:\\user.xml",
-//		"http://en.wikipedia.org/w/api.php?action=query&list=usercontribs&ucuser=Farpointer&uclimit=5&format=xml");
 		saveXML("d:\\Albert.xml",
 				"http://en.wikipedia.org/w/api.php?action=query&titles=Albert%20Einstein&prop=revisions&rvlimit=5&rvprop=ids|flags|user|timestamp|comment|size&format=xml");
-	//	saveXML("d:\\test2.xml",
-	//			"http://en.wikipedia.org/w/api.php?action=query&titles=Monkey&prop=revisions&rvlimit=10&format=xml");
+
 	}
 
 	public static void saveXML(String objectFile, String URL) throws Exception {

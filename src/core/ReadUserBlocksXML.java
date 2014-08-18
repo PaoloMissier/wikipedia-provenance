@@ -137,7 +137,7 @@ public class ReadUserBlocksXML {
 				}
 			}else
 			{
-				CreateProv.getUserBlockData(user, user, null, null, false);
+				//CreateProv.getUserBlockData(user, user, null, null, false);
 			}
 				
 
