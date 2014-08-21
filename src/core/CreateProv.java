@@ -193,7 +193,7 @@ public class CreateProv {
 		user = sanitizeUserStringForURI(user);
 
 		//Check if article node exists - else create it and add to Model
-		String uriString = title + "_" + revid;
+		String uriString = "_" + title + "_" + revid;
 		QualifiedName articleNodeURI = new QualifiedName(WIKI_PROV_NS,uriString,WIKI_PROV_PREFIX);
 		ArrayList<Attribute> properties = new ArrayList<Attribute>();
 
@@ -283,7 +283,7 @@ public class CreateProv {
 
 		if(parentid != "0")
 		{
-			String parentNodeString = title + "_" + parentid;
+			String parentNodeString = "_" + title + "_" + parentid;
 			 QualifiedName parentNodeURI = new QualifiedName(WIKI_PROV_NS,parentNodeString,WIKI_PROV_PREFIX);
 
 			 properties = new ArrayList<Attribute>();
@@ -298,7 +298,7 @@ public class CreateProv {
 
 
 
-			String relationshipRevisionParentName = title + "_" + revid + "_" + parentid;
+			String relationshipRevisionParentName = "revision_" + title + "_" + revid + "_" + parentid;
 			QualifiedName relationshipRevisionParentURI =new QualifiedName(WIKI_PROV_NS,relationshipRevisionParentName,WIKI_PROV_PREFIX);
 
 			//Ontology.QualifiedName_PROVO_Revision
@@ -346,7 +346,9 @@ public static void getUserData(String title, String revid, String user, String t
 	user = sanitizeUserStringForURI(user);
 
 	//Check if article node exists - else create it and add to Model
-	String uriString = title + "_" + revid;
+	//We prefix with '_' because we can't guarantee that the first character is one of 
+	//namestartchar according to the turtle grammar.
+	String uriString = "_" + title + "_" + revid;
 	QualifiedName articleNodeURI = new QualifiedName(WIKI_PROV_NS,uriString,WIKI_PROV_PREFIX);
 	ArrayList<Attribute> properties = new ArrayList<Attribute>();
 
@@ -383,7 +385,7 @@ public static void getUserData(String title, String revid, String user, String t
 
 
 
-	String userNodeString = user;
+	String userNodeString = "_" + user;
 	QualifiedName userNodeURI = new QualifiedName(WIKI_PROV_NS,userNodeString,WIKI_PROV_PREFIX);
 	properties = new ArrayList<Attribute>();
 
@@ -394,7 +396,7 @@ public static void getUserData(String title, String revid, String user, String t
 
 	model.newAgent(userNodeURI, properties);
 
-	String relationshipArticleActivityName = revid + "comment";
+	String relationshipArticleActivityName = "generation" + revid;
 	QualifiedName relationshipArticleActivityNodeURI = new QualifiedName(WIKI_PROV_NS,relationshipArticleActivityName,WIKI_PROV_PREFIX);
 
 	properties = new ArrayList<Attribute>();
@@ -409,7 +411,7 @@ public static void getUserData(String title, String revid, String user, String t
 
 
 
-	String relationshipActivityUserName = "comment" + revid + user;
+	String relationshipActivityUserName = "association" + revid + user;
     QualifiedName relationshipActivityUserNodeURI = new QualifiedName(WIKI_PROV_NS,relationshipActivityUserName,WIKI_PROV_PREFIX);
     properties = new ArrayList<Attribute>();
 
@@ -439,12 +441,10 @@ public static void getUserPageData(String user,String userid, String userStatus,
 
 	ArrayList<Attribute> properties = new ArrayList<Attribute>();
 
-	String userNodeString = user;
+	String userNodeString = "_" + user;
 	QualifiedName userNodeURI = new QualifiedName(WIKI_PROV_NS,userNodeString,WIKI_PROV_PREFIX);
 	properties = new ArrayList<Attribute>();
 
-	//properties.add(createProvAttribute(AttributeKind.PROV_TYPE, "editor","string"));
-	//properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "type", "agent","string"));
 	properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "user_name", user,"string"));
 	properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "userid", userid,"string"));
 	properties.add(createAttribute(WIKI_PROV_NS,WIKI_PROV_PREFIX, "status", userStatus,"string"));
@@ -465,7 +465,6 @@ public static void getUserPageData(String user,String userid, String userStatus,
 	model.newAgent(userNodeURI, properties);
 
 
-
 }
 
 public static void getUserBlockData(String user, String userid, String time, String expiry, boolean blocked) {
@@ -474,7 +473,7 @@ public static void getUserBlockData(String user, String userid, String time, Str
 	user = sanitizeUserStringForURI(user);
 	boolean newuser = blockedusers.add(user);
 
-	String userNodeString = user;
+	String userNodeString = "_" + user;
 	QualifiedName userNodeURI = new QualifiedName(WIKI_PROV_NS,userNodeString,WIKI_PROV_PREFIX);
 	properties = new ArrayList<Attribute>();
 
@@ -506,7 +505,7 @@ public static void getUserBlockData(String user, String userid, String time, Str
 
 		String time = sanitizeUserStringForURI(ISO8601.now());
 
-		String uriString = title + "_" + time;
+		String uriString = "bundle_" + title + "_" + time;
 		currentBundle = new QualifiedName(WIKI_PROV_NS,uriString,WIKI_PROV_PREFIX);
 		Hashtable<String,String> namespaceTable = new Hashtable<String,String>();
 		namespaceTable.put("xsd", "http://www.w3.org/2001/XMLSchema#");

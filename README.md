@@ -5,12 +5,22 @@ Updated version of the wikipedia-provenance tool to generate provenance of wikip
 
 The tool supports two forms of usage:
 
-  - via the commandline to generate provenance as RDF, or store in a neo4j backend
+  - via the command line to generate provenance as RDF, or store in a neo4j backend
   - via a GUI to store and query a neo4j backend
 
 
 ###Buiding and Using###
-Build the jar using maven `mvn package`. You can then use the tool as `java -jar wikipedia-provenance-<version>-jar-with-dependencies.jar <arguments>`. 
+Build the jar using maven `mvn package`. You can then use the tool as `java -jar wikipedia-provenance-<version>-jar-with-dependencies.jar <arguments>`.
+=======
+Updated version of the [wikipedia-provenance tool](http://github.com/paolomissier/wikipedia-provenance) to generate provenance of wikipedia history pages.
+
+The tool supports two forms of usage
+
+###Dependencies###
+
+GNU wdiff: https://www.gnu.org/software/wdiff/ is required if you want to be generate quantitative provenance information about diffs between revisions (--diff)
+
+>>>>>>> Stashed changes
 
 ### Usage ###
 ```
@@ -37,8 +47,6 @@ usage: wiki2prov
 ```
 
 
-
-
 ###Dependencies###
 
 GNU wdiff: https://www.gnu.org/software/wdiff/ is required if you want to be generate quantitative provenance information about diffs between revisions (--diff).
@@ -53,7 +61,7 @@ java -jar target/wikipedia-provenance-0.0.6-jar-with-dependencies.jar -p Manches
 ```
 
 
-An example using Neo4j as the data store (at the default address of http://localhost:747)
-``` 
+An example using Neo4j as the data store (at the default address of http://localhost:7474)
+```
 java -jar target/wikipedia-provenance-0.0.6-jar-with-dependencies.jar -p Amsterdam -neo4j -r 4
 ```
