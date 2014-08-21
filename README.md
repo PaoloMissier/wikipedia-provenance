@@ -11,16 +11,6 @@ The tool supports two forms of usage:
 
 ###Buiding and Using###
 Build the jar using maven `mvn package`. You can then use the tool as `java -jar wikipedia-provenance-<version>-jar-with-dependencies.jar <arguments>`.
-=======
-Updated version of the [wikipedia-provenance tool](http://github.com/paolomissier/wikipedia-provenance) to generate provenance of wikipedia history pages.
-
-The tool supports two forms of usage
-
-###Dependencies###
-
-GNU wdiff: https://www.gnu.org/software/wdiff/ is required if you want to be generate quantitative provenance information about diffs between revisions (--diff)
-
->>>>>>> Stashed changes
 
 ### Usage ###
 ```
